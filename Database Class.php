@@ -1,30 +1,30 @@
 <?php 
 /**************************************************************************************
- @ Module Name 	PHP Database Class 
- @ Category 	Database Access
+ @ Module Name 		PHP Database Class 
+ @ Category 		Database Access
  @ Author 		Abdallah BeraiDEV || Abdallah Beraidq <a.butenka@gmail.com>
- @ Copyright 	Copyright (c) 2017-2018
- @ License   	GNU Public License <http://opensource.org/licenses/gpl-3.0.html>
- @ Link 		.
- @ Version 		1.0.0-master
+ @ Copyright 		Copyright (c) 2017-2018
+ @ License   		GNU Public License <http://opensource.org/licenses/gpl-3.0.html>
+ @ Link 		https://github.com/AbdallahBeraiDEV/PHPClasses
+ @ Version 		1.0 Beta
  ***************************************************************************************
  @ Methodes :
 	- getSettings() 		: Login information for database.
 	- connect() 			: Connect To The DataBase.
 	- query($query)			: Executes a database query.
-	- escapeString($query) 	: Escape strings for a database query.
+	- escapeString($query) 		: Escape strings for a database query.
 	- numRows($result)		: Get number of rows in database as return.
-	- lastInsertedID($conn) : Get last Inserted ID in the database.
+	- lastInsertedID($conn) 	: Get last Inserted ID in the database.
 	- fetchArray($result, $resultType) : Gets array of query results.
 	- fetchAll($result, $resultType)   : Fetches all result rows as array.
-	- fetchAssoc($result) 	: Get query using assoc method.
+	- fetchAssoc($result) 		: Get query using assoc method.
 	- fetchRow($result)		: Get a result row as an enumerated array.
-	- freeResult($result)	: Free all MySQLi result memory.
-	- close()				: Closes the database connection.
+	- freeResult($result)		: Free all MySQLi result memory.
+	- close()			: Closes the database connection.
 	- sql_error() 			: Repporting errors in the database
  @ Attributes : 
  	- $conn 	  = The result of connection with database.
- 	- $resultType = "MYSQLI_ASSOC" is default value, you can change it.
+ 	- $resultType	  = "MYSQLI_ASSOC" is default value, you can change it.
  	- $query 	  = SQLi query to search on the database.
  	- $result 	  = The result of seaching on the database.
  *****************************************************************************************/
@@ -37,9 +37,9 @@ class DatabaseSettings {
 	public function getSettings(){
 		// Database variables
 		$settings['dbhost'] 	= 'localhost'; 	# Host name
-		$settings['dbusername'] = 'root'; 	 	# Username
-		$settings['dbpassword'] = ''; 			# Password
-		$settings['dbname'] 	= 'test'; 	  	# Database name
+		$settings['dbusername'] = 'root'; 	# Username
+		$settings['dbpassword'] = ''; 		# Password
+		$settings['dbname'] 	= 'test'; 	# Database name
 		return $settings;
 	}
 
