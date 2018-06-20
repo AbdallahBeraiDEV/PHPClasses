@@ -28,61 +28,48 @@
  	- $query 	  = SQLi query to search on the database.
  	- $result 	  = The result of seaching on the database.
  *****************************************************************************************/
- 	
-class DatabaseSettings {
+//error_reporting(0); #turn off error reporting for security
+
+
+class Database {
 	// Proprieties :
-	public $settings;
-
-	// Methodes :
-	public function getSettings(){
-		// Database variables
-		$settings['dbhost'] 	= 'localhost'; 	# Host name
-		$settings['dbusername'] = 'root'; 	# Username
-		$settings['dbpassword'] = ''; 		# Password
-		$settings['dbname'] 	= 'test'; 	# Database name
-		return $settings;
-	}
-
-}
-
-class Database extends DatabaseSettings
-{
-	// Proprieties :
+	private static $dbHost = 'localhost';
+	private static $dbUser = 'root';	
+	private static $dbPass = '';
+	private static $dbName = 'test';
+   	private static $connection = null;
+	// -------------------
 	public $classQuery;
-	public $link;
 	public $errno = '';
 	public $error = '';
 
 	// Methodes :
 	#= A #= Connect To The DataBase : 
-	public function connect(){
-		// Load settings from parent class
-		$settings = DatabaseSettings::getSettings();
-		
-		// Get the main settings from the array we just loaded
-		$host = $settings['dbhost'];
-		$user = $settings['dbusername'];
-		$pass = $settings['dbpassword'];
-		$name = $settings['dbname'];
-		
+	public function connect(){//
 		// Connect to the database
-		$this->link = new mysqli( $host , $user , $pass , $name );
+		self::$connection = new mysqli(self::$dbHost, self::$dbUser, self::$dbPass, self::$dbName);
 
-		if ($this->link) {
-			echo "success";
+		if (self::$connection->connect_error) {
+			die('Connection failed: ' . self::$connection->connect_error);
+		} else {
+			echo"Connected successfully";
 		}
+		return self::$connection;
 	}
 	#= B1 #= Executes a database query
-	public function query( $query){
+	public function query($query){
+		self::$connection = $this->connect();
 		$this->classQuery = $query;
-		return $this->link->query($query);
+		return self::$connection->query($query);
 	}
 	#= B2 #= Executes a database query : escape strings
 	public function escapeString( $query ){
-		return $this->link->escape_string( $query );
+		self::$connection = $this->connect();
+		return self::$connection->escape_string( $query );
 	}
 	#= C1 #= Get the data return 
 	public function numRows( $result ) {
+		self::$connection = $this->connect();
 	    if (is_object($result)) {
 	        $RowCount = $result->num_rows;
 	    }
@@ -93,18 +80,17 @@ class Database extends DatabaseSettings
 	}
 	#= C2 #= Get last Inserted ID
 	public function lastInsertedID($conn){
-
-		$this->link = $conn;
+		self::$connection = $conn;
 		printf ("New Record has id %d.\n", @mysqli_insert_id($conn)+1);
 	}
 	#= D1 #= Gets array of query results
-	public function fetchArray( $result , $resultType = MYSQLI_ASSOC ){
+	public function fetchArray( $result , $resultType = MYSQLI_BOTH ){
 		echo'<pre>';
 		print_r($result->fetch_array($resultType));
 		echo'</pre>';
 	}
 	#= E1 #= Fetches all result rows as an associative array, a numeric array, or both
-	public function fetchAll( $result , $resultType = MYSQLI_ASSOC ){
+	public function fetchAll( $result , $resultType = MYSQLI_BOTH ){
 		echo'<pre>';
 		print_r($result->fetch_all( $resultType )) ;
 		echo'</pre>';
@@ -112,7 +98,7 @@ class Database extends DatabaseSettings
 	#= F #= Get query using assoc method
 	public function fetchAssoc( $result ){
 		echo'<pre>';
-		print_r($result->fetch_assoc()) ;
+		print_r($result->fetch_assoc());
 		echo'</pre>';
 	}
 	#= G #= Get a result row as an enumerated array
@@ -123,19 +109,20 @@ class Database extends DatabaseSettings
 	}
 	#= H #= Free all MySQLi result memory
 	public function freeResult( $result ){
-		$this->link->free_result( $result );
+		self::$connection->free_result( $result );
 	}
 	#= I #= Closes the database connection
 	public function close(){
-		$this->link->close();
+		self::$connection->close();
 	}
 	#= J #= Repporting errors in the database
 	public function sql_error(){
 		if( empty( $error ) ){
-			$errno = $this->link->errno;
-			$error = $this->link->error;
+			$errno = self::$connection->errno;
+			$error = self::$connection->error;
 		}
 		return $errno .' : ' .$error;
 	}
-}
+	// Magic Methodes :
 
+}
